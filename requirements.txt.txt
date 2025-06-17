@@ -1,0 +1,3 @@
+pyyaml
+xmltodict
+pyqt5
