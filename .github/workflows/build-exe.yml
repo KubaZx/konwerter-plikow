@@ -1,0 +1,37 @@
+name: Budowanie EXE i upload
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Checkout repozytorium
+      uses: actions/checkout@v3
+
+    - name: Zainstaluj Python + pip
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+
+    - name: Instaluj zależności
+      run: |
+        pip install -r requirements.txt
+        py -m pip install pyinstaller
+
+    - name: Uruchom installResources.ps1
+      run: ./installResources.ps1
+      shell: pwsh
+
+    - name: Buduj EXE
+      run: pyinstaller projekt.py --onefile --name konwerter
+
+    - name: Upload .exe jako artefakt
+      uses: actions/upload-artifact@v3
+      with:
+        name: konwerter-plikow
+        path: dist/konwerter.exe
